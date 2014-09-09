@@ -168,9 +168,17 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
-    if (accumulator == undefined) accumulator = collection[0];
-    for (var i=0; i<collection.length; i++) {
-      accumulator = iterator(accumulator, collection[i]);
+    if (Array.isArray(collection)){
+      if (accumulator == undefined) accumulator = collection[0];
+      for (var i=0; i<collection.length; i++) {
+        accumulator = iterator(accumulator, collection[i]);
+      }
+    }
+    else {
+      if (accumulator == undefined) accumulator = collection[0];
+      for (var key in collection) {
+        accumulator = iterator(accumulator, collection[key]);
+      }      
     }
     return accumulator;
   };
