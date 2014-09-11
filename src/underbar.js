@@ -320,6 +320,14 @@ var _ = {};
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var arrayCopy = array.slice(0,array.length);
+    var result = [];
+    while (arrayCopy.length > 0) {
+      var rand = Math.floor(Math.random()*arrayCopy.length);
+      result.push(arrayCopy[rand]);
+      arrayCopy.splice(rand,1);
+    }
+    return result;
   };
 
 
