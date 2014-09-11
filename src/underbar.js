@@ -299,13 +299,13 @@ var _ = {};
   _.memoize = function(func) {
      var resultsObj = {};
 
-    return function() {
-      if (arguments in resultsObj) {
-        return resultsObj[arguments];
+    return function(arg) {
+      if (arg in resultsObj) {
+        return resultsObj[arg];
       }
       else {
-        resultsObj[arguments] = func.apply(this, arguments);
-        return resultsObj[arguments];
+        resultsObj[arg] = func.apply(this, arguments);
+        return resultsObj[arg];
       }
     }
   };
