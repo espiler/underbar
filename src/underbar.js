@@ -356,7 +356,6 @@ var _ = {};
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
     var mapped = [];
-    var mappedSort;
     if (typeof(iterator) === 'string') {
       _.each(collection, function(item, index) {
         mapped.push([item[iterator], index]);
@@ -368,7 +367,7 @@ var _ = {};
       })
     }
     if (_.some(mapped, function(item) {return typeof(item[0]) === 'string'})) {
-      mappedSort = mapped.slice().sort(function(a,b) {
+      var mappedSort = mapped.slice().sort(function(a,b) {
         if(a[0] < b[0]) { return -1; }
         if(a[0] > b[0]) { return 1; }
         return 0;
@@ -379,7 +378,7 @@ var _ = {};
           mapped[index] = [Infinity, index];
         }
       });
-      mappedSort = mapped.slice().sort(function(a,b){return a[0]-b[0];});
+      var mappedSort = mapped.slice().sort(function(a,b){return a[0]-b[0];});
     }
  
     var result = _.map(mappedSort, function(item) {
@@ -411,6 +410,12 @@ var _ = {};
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    return _.reduce(nestedArray, function(partial, next){
+      if (Array.isArray(next)) {
+        return partial.concat(_.flatten(next));
+      }
+      return partial.concat(next);
+    }, []);
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
