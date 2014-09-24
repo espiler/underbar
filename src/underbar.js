@@ -355,27 +355,35 @@ var _ = {};
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-    var mapped;
+    var mapped = [];
     var mappedSort;
     if (typeof(iterator) === 'string') {
-      mapped = _.map(collection, function(item){
-      return item[iterator];
-      })
+      _.each(collection, function(item, index) {
+        mapped.push([item[iterator], index]);
+      });
     }
     if (typeof(iterator) === 'function') {
-      mapped = _.map(collection, iterator);
+      _.each(collection, function(item, index) {
+        mapped.push([iterator(item), index])
+      })
     }
-    if (_.some(mapped, function(item) {return typeof(item) === 'string'})) {
-      mappedSort = mapped.slice().sort();
-    } else if (_.some(mapped, function(item) {return typeof(item) === 'number'})) {
-      mappedSort = mapped.slice().sort(function(a,b){return a-b;});
+    if (_.some(mapped, function(item) {return typeof(item[0]) === 'string'})) {
+      mappedSort = mapped.slice().sort(function(a,b) {
+        if(a[0] < b[0]) { return -1; }
+        if(a[0] > b[0]) { return 1; }
+        return 0;
+         });
+    } else if (_.some(mapped, function(item) {return typeof(item[0]) === 'number'})) {
+      _.each(mapped, function(item, index) {
+        if (item[0] === undefined) {
+          mapped[index] = [Infinity, index];
+        }
+      });
+      mappedSort = mapped.slice().sort(function(a,b){return a[0]-b[0];});
     }
-
-    var order = _.map(mappedSort, function(item){
-        return mapped.indexOf(item);
-    });  
-    var result = _.map(order, function(item) {
-        return collection[item];
+ 
+    var result = _.map(mappedSort, function(item) {
+        return collection[item[1]];
     });
     return result;
   };
