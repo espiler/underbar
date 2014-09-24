@@ -355,6 +355,29 @@ var _ = {};
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    var mapped;
+    var mappedSort;
+    if (typeof(iterator) === 'string') {
+      mapped = _.map(collection, function(item){
+      return item[iterator];
+      })
+    }
+    if (typeof(iterator) === 'function') {
+      mapped = _.map(collection, iterator);
+    }
+    if (_.some(mapped, function(item) {return typeof(item) === 'string'})) {
+      mappedSort = mapped.slice().sort();
+    } else if (_.some(mapped, function(item) {return typeof(item) === 'number'})) {
+      mappedSort = mapped.slice().sort(function(a,b){return a-b;});
+    }
+
+    var order = _.map(mappedSort, function(item){
+        return mapped.indexOf(item);
+    });  
+    var result = _.map(order, function(item) {
+        return collection[item];
+    });
+    return result;
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -367,7 +390,6 @@ var _ = {};
     var longest = Math.max.apply(null, lengths);
     var result = new Array(longest);
     result = _.map(result, function(item){ return [];});
-    console.log(result);
     for (var i = 0; i<arguments.length; i++) {
       for (var j=0; j<longest; j++) {
         result[j].push(arguments[i][j]);
