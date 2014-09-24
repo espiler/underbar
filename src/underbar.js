@@ -440,6 +440,20 @@ var _ = {};
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var result = [];
+    var tester = arguments[0];
+    for (var i=0; i<tester.length; i++) {
+      var match = false;
+      for (var j=1; j<arguments.length; j++) {
+        if (arguments[j].indexOf(tester[i]) !== -1) {
+          match = true;
+        }
+      }
+      if (match === false) {
+        result.push(tester[i]);
+      }
+    }
+    return result;
   };
 
 
